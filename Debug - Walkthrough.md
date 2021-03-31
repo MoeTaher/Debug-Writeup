@@ -1,5 +1,5 @@
 # Debug : 
-##Linux Machine CTF! You'll learn about enumeration, finding hidden password files and how to exploit php deserialization!
+## Linux Machine CTF! You'll learn about enumeration, finding hidden password files and how to exploit php deserialization!
 
 ```
 Hey everybody!
