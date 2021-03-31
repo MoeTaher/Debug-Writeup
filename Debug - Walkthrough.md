@@ -11,7 +11,8 @@ The main idea of this room is to make you learn more about php deserialization!
 I hope you enjoy your journey :)
 ```
 
-![[04878cdb1624bcc08af74122f6b68a88.jpeg]]
+![04878cdb1624bcc08af74122f6b68a88](https://user-images.githubusercontent.com/58278761/113150929-439daf80-923d-11eb-8d82-ac5ae0fd1b35.jpeg)
+
 
 As a hint from the Creator, we will be facing a PHP Deserialization.
 
@@ -46,11 +47,14 @@ Service detection performed. Please report any incorrect results at https://nmap
 # Nmap done at Tue Mar 30 23:07:45 2021 -- 1 IP address (1 host up) scanned in 14.22 seconds
 ```
  
- We Have 2 Open ports:
-					80 - http
-					22 - ssh
+ We Have 2 Open ports: 
+ 80 : http
+ 22 : ssh 
+ 
 checking the http we get The Default Apache Page , and there is nothing usefull here; 
 lets try to see if there any directories in the site ,
+
+
 
 ```bash
 ===============================================================
@@ -90,18 +94,22 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@_FireFart_)
  
  first lets see what inside the backup ...
  
- ![[Screenshot from 2021-03-31 03-13-38.png]]
+![Screenshot from 2021-03-31 03-13-38](https://user-images.githubusercontent.com/58278761/113151090-6c25a980-923d-11eb-8978-73f04f44db59.png)
+
  
  it seems that we have a source code for the index.php website,
- by checking the source code we can easly identify where is the vulnerable code ...
+ by checking the source code we can identify where is the vulnerable code ...
  
- ![[Pasted image 20210331033918.png]]
+![Pasted image 20210331033918](https://user-images.githubusercontent.com/58278761/113151201-83fd2d80-923d-11eb-836d-e0199f1644d2.png)
+
  
  As we Can see here we have debug parameter that being unserialized ,
- and accually we have one of the magic method  is the "__destruct()"
+ and we have one of the magic method  is the "__destruct()"
  
- the destruct method is take form_file as file name , and message variable as its value 
- and creating the file 
+A very good Resource for PHP Serialization : https://notsosecure.com/remote-code-execution-via-php-unserialize/
+ 
+the destruct method is Taking $form_file as file name , and $message variable as its value 
+and creating a file in the same directory
  
  so we can write a php code to generate a serialized object that will create a php reverse shell file as bellow :
  
@@ -131,25 +139,29 @@ setup a listener and  pass the payload to "debug" parameter then navigate to /sh
 Manually Checking the html directory we see that we got .htapasswd as the creator 
 mentioned (hidden) passwords
 
-![[Pasted image 20210331040049.png]]
+![Pasted image 20210331040049](https://user-images.githubusercontent.com/58278761/113151253-924b4980-923d-11eb-924d-8913704b4ddd.png)
+
 
 well the password is hashed, we can crack it with john using rockyou
 
-![[Pasted image 20210331040832.png]]
+![Pasted image 20210331040832](https://user-images.githubusercontent.com/58278761/113151284-9aa38480-923d-11eb-942b-0901d443f4f7.png)
+
 
 
 # Root 
 
 root left a message to james ,, 
 
-![[Pasted image 20210331041225.png]]
+![Pasted image 20210331041225](https://user-images.githubusercontent.com/58278761/113151344-a727dd00-923d-11eb-959c-b9342f64c135.png)
 
-so can modify the welcome message in ssh that located in ```/etc/update-motd.d/00-header```
 
-Here you can see how you can explit this by adding a reverseshell or by simply adding suid to bin/bash like this 
+so James can modify the welcome message in ssh that located in ```/etc/update-motd.d/00-header```
 
-![[Pasted image 20210331042420.png]]
+Here you can see how you can exploit this by adding a reverseshell or by simply adding SUID to /bin/bash like this 
+
+![Pasted image 20210331042420](https://user-images.githubusercontent.com/58278761/113151382-af801800-923d-11eb-83d1-517c83a8ad0c.png)
+
 
 
 # voilà
-![[Pasted image 20210331042824.png]]
+![Pasted image 20210331042824](https://user-images.githubusercontent.com/58278761/113151405-b60e8f80-923d-11eb-973c-e286b516abf3.png)
